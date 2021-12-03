@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Covid Volunteering Site</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="enter_longitude_of_site">Enter longitude of site</string>
+    <string name="enter_latitude_of_site">Enter latitude of site</string>
+    <string name="leader_name">Leader Name</string>
+    <string name="confirm_add_site">Confirm Add Site</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="create_new_account"><u>Create New Account</u></string>
+    <string name="signup">SIGN UP</string>
+    <string name="already_has_account_sign_in"><u>Already has account? Sign In</u></string>
+    <string name="name">Name</string>
+    <string name="enter_the_site_name">Enter the site name</string>
+    <string name="site_name">Site Name</string>
+    <string name="site_longitude">Site Longitude</string>
+    <string name="site_latitude">Site Latitude</string>
+</resources>
