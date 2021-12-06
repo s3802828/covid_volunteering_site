@@ -79,15 +79,6 @@ public class SiteManager {
                 DatabaseHelper.SITE_LATITUDE,
                 DatabaseHelper.SITE_NUM_OF_TESTED
         };
-//        Cursor cursor = database.query(DatabaseHelper.SITE_TABLE_NAME, columns,
-//                    "(((" + DatabaseHelper.SITE_LONGITUDE + "-(" + currLng + ")) * (" +
-//                            DatabaseHelper.SITE_LONGITUDE + "-(" + currLng + "))) + ((" +
-//                            DatabaseHelper.SITE_LATITUDE + "-(" + currLat + ")) * (" +
-//                            DatabaseHelper.SITE_LATITUDE + "-(" + currLat + ")))) < " + distance * distance,
-//                    null, null, null, "(((" + DatabaseHelper.SITE_LONGITUDE + "-(" + currLng + ")) * (" +
-//                            DatabaseHelper.SITE_LONGITUDE + "-(" + currLng + "))) + ((" +
-//                            DatabaseHelper.SITE_LATITUDE + "-(" + currLat + ")) * (" +
-//                            DatabaseHelper.SITE_LATITUDE + "-(" + currLat + ")))) desc" );
         Cursor cursor;
         if(southWestLng <= northEastLng){
             cursor = database.query(DatabaseHelper.SITE_TABLE_NAME, columns,
@@ -118,6 +109,18 @@ public class SiteManager {
         };
         Cursor cursor = database.query(DatabaseHelper.VOLUNTEERING_TABLE_NAME, columns,
                 DatabaseHelper.VOLUNTEERING_SITE_ID + " =" + id, null, null, null, null);
+        if(cursor != null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    public Cursor getJoinedSitesOfOneUser(int user_id){
+        String[] columns = new String[]{
+                DatabaseHelper.VOLUNTEERING_SITE_ID
+        };
+        Cursor cursor = database.query(DatabaseHelper.VOLUNTEERING_TABLE_NAME, columns,
+                DatabaseHelper.VOLUNTEERING_USER_ID + " =" + user_id, null, null, null, null);
         if(cursor != null){
             cursor.moveToFirst();
         }

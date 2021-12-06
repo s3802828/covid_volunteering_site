@@ -19,11 +19,20 @@
         android:id="@+id/username_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/password_login"
+        android:layout_above="@+id/invalidUsername"
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/username" />
+
+    <TextView
+        android:id="@+id/invalidUsername"
+        android:layout_width="wrap_content"
+        android:layout_above="@+id/password_login"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:textColor="@color/red" />
 
     <EditText
         android:id="@+id/password_login"
@@ -35,9 +44,19 @@
         android:hint="@string/password"/>
 
     <TextView
-        android:id="@+id/toSignUp"
+        android:id="@+id/invalidPassword"
         android:layout_width="wrap_content"
         android:layout_below="@+id/password_login"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:textColor="@color/red" />
+
+
+    <TextView
+        android:id="@+id/toSignUp"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/invalidPassword"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:onClick="goToSignUp"

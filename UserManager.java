@@ -46,4 +46,39 @@ public class UserManager {
         }
         return cursor;
     }
+
+    public Cursor getUserByUsername(String username){
+        String[] columns = new String[]{
+                DatabaseHelper.USER_ID,
+                DatabaseHelper.USER_NAME,
+                DatabaseHelper.USER_IS_SUPER
+        };
+        Cursor cursor = database.query(DatabaseHelper.USER_TABLE_NAME, columns,
+                DatabaseHelper.USER_USERNAME + " = '" + username + "'",
+                null, null, null, null);
+        if(cursor != null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    public boolean isExistUsername(String username){
+        String[] columns = new String[]{
+                DatabaseHelper.USER_NAME
+        };
+        Cursor cursor = database.query(DatabaseHelper.USER_TABLE_NAME, columns,
+                DatabaseHelper.USER_USERNAME + " = '" + username + "'",
+                null, null, null, null);
+        return cursor.getCount() > 0;
+    }
+    public boolean isLoginCorrect(String username, String password){
+        String[] columns = new String[]{
+                DatabaseHelper.USER_NAME
+        };
+        Cursor cursor = database.query(DatabaseHelper.USER_TABLE_NAME, columns,
+                DatabaseHelper.USER_USERNAME + " = '" + username + "' and " +
+                        DatabaseHelper.USER_PASSWORD + " = '" + password + "'",
+                null, null, null, null);
+        return cursor.getCount() > 0;
+    }
 }

@@ -4,7 +4,7 @@
     <string name="enter_longitude_of_site">Enter longitude of site</string>
     <string name="enter_latitude_of_site">Enter latitude of site</string>
     <string name="leader_name">Leader Name</string>
-    <string name="confirm_add_site">Confirm Add Site</string>
+    <string name="confirm_add_site">CONFIRM</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
@@ -16,4 +16,6 @@
     <string name="site_name">Site Name</string>
     <string name="site_longitude">Site Longitude</string>
     <string name="site_latitude">Site Latitude</string>
+    <string name="cancel">CANCEL</string>
+    <string name="enter_username">Enter Username</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -37,15 +38,33 @@ public class AddSiteActivity extends AppCompatActivity {
         siteManager.open();
     }
 
+    @SuppressLint("SetTextI18n")
     public void onConfirmAddSite(View v){
         siteName = findViewById(R.id.nameAdd);
-        siteManager.addSite(siteName.getText().toString(),
-                Double.parseDouble(siteLatitude.getText().toString()),
-                Double.parseDouble(siteLongitude.getText().toString()),
-                leader_id);
+        String siteNameValue = siteName.getText().toString().trim();
+        TextView invalidName = findViewById(R.id.invalidName);
+
+        if(siteNameValue.equals("")){
+            invalidName.setText("Name is required");
+            invalidName.setVisibility(View.VISIBLE);
+        } else if (!siteNameValue.matches("^(?![ ]+$)[a-zA-Z0-9 .]*$")){
+            invalidName.setText("Name must only contain letters, numbers, and space");
+            invalidName.setVisibility(View.VISIBLE);
+        } else invalidName.setVisibility(View.GONE);
+
+        if(invalidName.getVisibility() == View.GONE){
+            siteManager.addSite(siteNameValue,
+                    Double.parseDouble(siteLatitude.getText().toString()),
+                    Double.parseDouble(siteLongitude.getText().toString()),
+                    leader_id);
+            backToMap(v);
+        }
+    }
+
+    public void backToMap(View v){
         Intent intent = new Intent(AddSiteActivity.this, MapsActivity.class);
-        intent.putExtra("successfully_added", true);
-        setResult(200, intent);
+        setResult(100, intent);
+        siteManager.close();
         finish();
     }
 }
