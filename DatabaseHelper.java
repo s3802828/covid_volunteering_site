@@ -25,8 +25,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String USER_IS_SUPER = "is_super";
 
     public static final String VOLUNTEERING_TABLE_NAME = "Volunteering";
+    public static final String VOLUNTEERING_ID = "_id";
     public static final String VOLUNTEERING_USER_ID = "user_id";
     public static final String VOLUNTEERING_SITE_ID = "site_id";
+    public static final String VOLUNTEERING_FRIEND_NAME = "volunteer_name";
+    public static final String VOLUNTEERING_FRIEND_EMAIL = "volunteer_email";
+
+    public static final String NOTIFICATION_TABLE_NAME = "Notifications";
+    public static final String NOTIFICATION_ID = "_id";
+    public static final String NOTIFICATION_RECEIVER = "receiver_id";
+    public static final String NOTIFICATION_MESSAGE = "message";
+    public static final String NOTIFICATION_TO_LEADER = "to_leader";
+
 
     private static final String CREATE_TABLE_USER =
             "create table " + USER_TABLE_NAME + "(" +
@@ -47,15 +57,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "(" + USER_ID + "));";
     private static final String CREATE_TABLE_VOLUNTEERING =
             "create table " + VOLUNTEERING_TABLE_NAME + "(" +
+                    VOLUNTEERING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     VOLUNTEERING_USER_ID + " INTEGER," +
                     VOLUNTEERING_SITE_ID + " INTEGER," +
-                    "primary key (" + VOLUNTEERING_USER_ID + "," + VOLUNTEERING_SITE_ID + ")," +
+                    VOLUNTEERING_FRIEND_NAME + " VARCHAR(255)," +
+                    VOLUNTEERING_FRIEND_EMAIL + " VARCHAR(255)," +
+                    "unique (" + VOLUNTEERING_USER_ID + "," + VOLUNTEERING_SITE_ID + "," + VOLUNTEERING_FRIEND_EMAIL + ")," +
                     "foreign key (" + VOLUNTEERING_SITE_ID + ") references " + SITE_TABLE_NAME +
                     "(" + SITE_ID + ")," +
                     "foreign key (" + VOLUNTEERING_USER_ID + ") references " + USER_TABLE_NAME +
                     "(" + USER_ID + "));";
 
-
+    private static final String CREATE_TABLE_NOTIFICATION =
+            "create table " + NOTIFICATION_TABLE_NAME + "(" +
+                    NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    NOTIFICATION_RECEIVER + " INTEGER," +
+                    NOTIFICATION_MESSAGE + " VARCHAR(255)," +
+                    NOTIFICATION_TO_LEADER + " BOOLEAN," +
+                    "FOREIGN KEY (" + NOTIFICATION_RECEIVER + ") REFERENCES " + USER_TABLE_NAME +
+                    "(" + USER_ID + "));";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -66,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_SITE);
         db.execSQL(CREATE_TABLE_VOLUNTEERING);
+        db.execSQL(CREATE_TABLE_NOTIFICATION);
     }
 
     @Override
@@ -73,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + VOLUNTEERING_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SITE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + NOTIFICATION_TABLE_NAME);
         onCreate(db);
     }
 }

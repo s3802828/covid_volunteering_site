@@ -17,15 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CovidVolunteeringSite">
         <activity
+            android:name=".VolunteerListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateSiteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JoinSiteActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
@@ -46,8 +48,14 @@
 
         <activity
             android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
+            android:exported="true"
+            android:label="@string/title_activity_maps">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

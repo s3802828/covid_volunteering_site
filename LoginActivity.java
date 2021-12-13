@@ -18,8 +18,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Intent intent = getIntent();
         userManager = new UserManager(this);
         userManager.open();
+        if(intent.getExtras().getBoolean("straight_to_sign_up")) goToSignUp(findViewById(R.id.toSignUp));
     }
 
     public void goToSignUp(View v){
@@ -58,10 +60,12 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             Cursor cursor = userManager.getUserByUsername(usernameValue);
             intent.putExtra("user_id", cursor.getInt(0));
-            intent.putExtra("user_name", cursor.getShort(1));
+            intent.putExtra("user_name", cursor.getString(1));
             intent.putExtra("user_username", usernameValue);
             intent.putExtra("is_super", cursor.getInt(2));
-            startActivityForResult(intent, 300);
+            setResult(300, intent);
+            userManager.close();
+            finish();
         }
     }
 

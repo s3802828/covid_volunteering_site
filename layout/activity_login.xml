@@ -11,56 +11,67 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/username_login"
+        android:layout_above="@+id/username_login_group"
         android:text="@string/login"
-        android:textSize="48sp" />
+        android:textSize="48sp"
+        android:layout_marginBottom="30dp"/>
 
-    <EditText
-        android:id="@+id/username_login"
+    <LinearLayout
+        android:id="@+id/username_login_group"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/invalidUsername"
-        android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/username" />
+        android:layout_above="@+id/password_login_group"
+        android:layout_centerHorizontal="true">
 
-    <TextView
-        android:id="@+id/invalidUsername"
-        android:layout_width="wrap_content"
-        android:layout_above="@+id/password_login"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        <EditText
+            android:id="@+id/username_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/username" />
 
-    <EditText
-        android:id="@+id/password_login"
+        <TextView
+            android:id="@+id/invalidUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/password_login_group"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:hint="@string/password"/>
+        android:layout_marginVertical="10dp">
+        <EditText
+            android:id="@+id/password_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="@string/password"/>
 
-    <TextView
-        android:id="@+id/invalidPassword"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/password_login"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:textColor="@color/red" />
-
+        <TextView
+            android:id="@+id/invalidPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/toSignUp"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/invalidPassword"
+        android:layout_below="@+id/password_login_group"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:onClick="goToSignUp"
         android:textStyle="italic"
+        android:layout_marginVertical="10dp"
         android:text="@string/create_new_account"/>
 
     <Button

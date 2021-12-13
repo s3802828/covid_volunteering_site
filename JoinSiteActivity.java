@@ -1,88 +1,61 @@
 package com.example.covidvolunteeringsite;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.nio.charset.StandardCharsets;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class JoinSiteActivity extends AppCompatActivity {
-    private EditText username, user_name, siteNum, siteName, siteLeader;
-    private TextView invalidUsername;
+    private TextView siteNum;
     private UserManager userManager;
     private SiteManager siteManager;
-    private int userID;
+    private NotificationAppManager notificationAppManager;
+    private int userID, leader_id;
+    private String currentUserName, currentUserUsername, siteNameJoin;
+    private Integer siteNumber;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_site);
         userManager = new UserManager(this);
         siteManager = new SiteManager(this);
+        notificationAppManager = new NotificationAppManager(this);
         siteManager.open();
         userManager.open();
+        notificationAppManager.open();
 
         Intent intent = getIntent();
 
-        String currentUserName = intent.getStringExtra("user_name");
-        String currentUserUsername = intent.getStringExtra("user_username");
-        int siteNumber = intent.getExtras().getInt("site_id");
-        String siteNameJoin = intent.getStringExtra("site_name");
+        currentUserName = intent.getStringExtra("user_name");
+        currentUserUsername = intent.getStringExtra("user_username");
+        siteNumber = intent.getExtras().getInt("site_id");
+        siteNameJoin = intent.getStringExtra("site_name");
         String siteLeaderJoin = intent.getStringExtra("site_leader");
         userID = intent.getExtras().getInt("user_id");
+        leader_id = intent.getExtras().getInt("site_leader_id");
 
 
-        username = findViewById(R.id.username_join);
+        TextView username = findViewById(R.id.username_join);
         username.setText(currentUserUsername);
 
-        user_name = findViewById(R.id.user_name_join);
+        TextView user_name = findViewById(R.id.user_name_join);
         user_name.setText(currentUserName);
 
         siteNum = findViewById(R.id.site_num_join);
-        siteNum.setText(siteNumber);
+        siteNum.setText(siteNumber.toString());
 
-        siteName = findViewById(R.id.site_name_join);
+        TextView siteName = findViewById(R.id.site_name_join);
         siteName.setText(siteNameJoin);
 
-        siteLeader = findViewById(R.id.site_leader_join);
+        TextView siteLeader = findViewById(R.id.site_leader_join);
         siteLeader.setText(siteLeaderJoin);
 
-        invalidUsername = findViewById(R.id.invalidUsername);
-
-        username.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.toString().equals("")){
-                    invalidUsername.setText("Username is required");
-                    invalidUsername.setVisibility(View.VISIBLE);
-                } else if(!userManager.isExistUsername(s.toString())){
-                    invalidUsername.setText("Username is not existed");
-                    invalidUsername.setVisibility(View.VISIBLE);
-                } else {
-                    invalidUsername.setVisibility(View.GONE);
-                    Cursor cursor = userManager.getUserByUsername(s.toString());
-                    user_name.setText(cursor.getString(1));
-                    userID = cursor.getInt(0);
-                };
-            }
-        });
     }
 
     public void backToMap(View v){
@@ -90,12 +63,65 @@ public class JoinSiteActivity extends AppCompatActivity {
         setResult(200, intent);
         siteManager.close();
         userManager.close();
+        notificationAppManager.close();
         finish();
     }
 
+    @SuppressLint("SetTextI18n")
     public void onConfirm(View v){
-        if(invalidUsername.getVisibility() == View.GONE){
-            siteManager.addVolunteering(Integer.parseInt(siteNum.getText().toString()), userID);
+        EditText friendEmail = findViewById(R.id.friend_email_join);
+        String emailValue = friendEmail.getText().toString().trim();
+
+        EditText friendName = findViewById(R.id.friend_name_join);
+        String nameValue = friendName.getText().toString().trim();
+
+        TextView invalidEmail = findViewById(R.id.invalidEmail);
+        TextView invalidName = findViewById(R.id.invalidName);
+        TextView invalidVolunteer = findViewById(R.id.invalidVolunteer);
+
+        if(emailValue.equals("") && !nameValue.equals("")){
+            invalidEmail.setText("Email is required");
+            invalidEmail.setVisibility(View.VISIBLE);
+            invalidVolunteer.setVisibility(View.GONE);
+        } else if(!emailValue.equals("") && nameValue.equals("")){
+            invalidName.setText("Name is required");
+            invalidName.setVisibility(View.VISIBLE);
+            invalidVolunteer.setVisibility(View.GONE);
+        } else {
+            invalidEmail.setVisibility(View.GONE);
+            invalidName.setVisibility(View.GONE);
+            boolean isExistVolunteer = false, isLeader = false;
+            if(emailValue.equals("")){
+                if(userID == leader_id) isLeader = true;
+                else isExistVolunteer = siteManager.checkExistVolunteer(Integer.parseInt(siteNum.getText().toString()), currentUserUsername);
+            } else {
+                isExistVolunteer = siteManager.checkExistVolunteer(Integer.parseInt(siteNum.getText().toString()), emailValue);
+            }
+            if(isLeader){
+                invalidVolunteer.setText("Leader is already registered");
+                invalidVolunteer.setVisibility(View.VISIBLE);
+            } else {
+                if(isExistVolunteer){
+                    invalidVolunteer.setText("This volunteer is already registered for this site");
+                    invalidVolunteer.setVisibility(View.VISIBLE);
+                } else invalidVolunteer.setVisibility(View.GONE);
+            }
+        }
+        if(invalidVolunteer.getVisibility() == View.GONE && invalidEmail.getVisibility() == View.GONE && invalidName.getVisibility() == View.GONE){
+            if(userID != leader_id) {
+                siteManager.addVolunteering(Integer.parseInt(siteNum.getText().toString()), userID, currentUserName, currentUserUsername);
+                String message = currentUserName + " (" + currentUserUsername
+                        + ") has recently joined your site: " + siteNameJoin
+                        + " (NO." + siteNumber +")";
+                notificationAppManager.addNotification(leader_id, message, true);
+            }
+            if(!emailValue.equals("")) {
+                siteManager.addVolunteering(Integer.parseInt(siteNum.getText().toString()), userID, nameValue,emailValue);
+                String message = nameValue + " (" + emailValue
+                        + ") has recently joined your site: " + siteNameJoin
+                        + " (NO." + siteNumber +")";
+                notificationAppManager.addNotification(leader_id, message, true);
+            }
             backToMap(v);
         }
     }

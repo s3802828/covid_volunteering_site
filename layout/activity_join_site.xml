@@ -7,22 +7,14 @@
     android:orientation="vertical"
     tools:context=".JoinSiteActivity">
 
-    <EditText
+    <TextView
         android:id="@+id/username_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
         android:hint="@string/enter_username" />
 
     <TextView
-        android:id="@+id/invalidUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
-
-    <EditText
         android:id="@+id/user_name_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,20 +22,57 @@
         android:inputType="none" />
 
     <EditText
+        android:id="@+id/friend_name_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/enter_friend_name" />
+
+    <TextView
+        android:id="@+id/invalidName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/red" />
+
+    <EditText
+        android:id="@+id/friend_email_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="@string/enter_email" />
+
+    <TextView
+        android:id="@+id/invalidEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/red" />
+
+    <TextView
+        android:id="@+id/invalidVolunteer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/red" />
+
+    <TextView
         android:id="@+id/site_num_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="none" />
 
-    <EditText
+    <TextView
         android:id="@+id/site_name_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="none" />
 
-    <EditText
+    <TextView
         android:id="@+id/site_leader_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

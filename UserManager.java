@@ -36,7 +36,8 @@ public class UserManager {
 
     public Cursor getOneUser(int id){
         String[] columns = new String[]{
-                DatabaseHelper.USER_NAME
+                DatabaseHelper.USER_NAME,
+                DatabaseHelper.USER_USERNAME
         };
         Cursor cursor = database.query(DatabaseHelper.USER_TABLE_NAME, columns,
                 DatabaseHelper.USER_ID + " =" + id,
