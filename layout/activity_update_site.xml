@@ -1,95 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".UpdateSiteActivity">
 
-    <EditText
-        android:id="@+id/nameUpdate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/enter_the_site_name"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        tools:ignore="TextContrastCheck" />
-
     <TextView
-        android:id="@+id/invalidName"
+        android:id="@+id/title_site_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/site_update_form"
+        android:layout_marginBottom="30dp"
+        android:text="@string/update_site"
+        android:textSize="48sp" />
 
-    <EditText
-        android:id="@+id/longitudeUpdate"
+    <TableLayout
+        android:id="@+id/site_update_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:importantForAutofill="no"
-        android:inputType="numberSigned"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="15dp"
+        android:shrinkColumns="0"
+        android:stretchColumns="1">
 
-    <EditText
-        android:id="@+id/latitudeUpdate"
+        <TableRow
+            android:id="@+id/site_name_update_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/nameUpdate"
+                android:text="@string/site_name"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/nameUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/enter_the_site_name"
+                    android:importantForAutofill="no"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:id="@+id/invalidName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nameUpdate"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/site_longitude_update_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/longitudeUpdateLabel"
+                android:layout_width="441dp"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/longitudeUpdate"
+                android:text="@string/site_longitude"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/longitudeUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="numberSigned" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/site_latitude_update_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/latitudeUpdateLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/latitudeUpdate"
+                android:text="@string/site_latitude"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/latitudeUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:importantForAutofill="no"
+                    android:inputType="numberSigned" />
+
+                <TextView
+                    android:id="@+id/invalidPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/latitudeUpdate"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </TableRow>
+
+    <TableRow
+        android:id="@+id/leaderNameUpdateGroup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:importantForAutofill="no"
-        android:inputType="numberSigned"
-        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/invalidPosition"
+        <TextView
+            android:id="@+id/leaderNameUpdateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:labelFor="@+id/leaderNameUpdate"
+            android:text="@string/site_leader_name"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/leaderNameUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:ems="10"
+            android:textColor="@color/black" />
+    </TableRow>
+
+        <TableRow
+            android:id="@+id/site_testedNum_update_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/testedNumLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tested_num"
+                android:paddingBottom="5dp"
+                android:text="Site Number of Tested People"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/tested_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/enter_number_of_tested_people"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:minHeight="48dp" />
+
+                <TextView
+                    android:id="@+id/invalidTestNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tested_num"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+        </TableRow>
+    </TableLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_site_update_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        android:layout_below="@+id/site_update_form"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true">
 
-    <EditText
-        android:id="@+id/tested_num"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/enter_number_of_tested_people"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck,TextContrastCheck" />
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onConfirmUpdateSite"
+            android:text="@string/confirm_add_site"
+            android:textColor="@color/white" />
 
-    <TextView
-        android:id="@+id/invalidTestNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="102dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/confirm_button"
+            android:onClick="backToMap"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 
-    <EditText
-        android:id="@+id/leaderNameUpdate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:importantForAutofill="no"
-        android:inputType="none"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onConfirmUpdateSite"
-        android:text="@string/confirm_add_site"
-        android:textColor="@color/white" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="backToMap"
-        android:text="@string/cancel"
-        android:textColor="@color/white" />
-
-</LinearLayout>
+</RelativeLayout>

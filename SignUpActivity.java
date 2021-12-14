@@ -74,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         if(invalidName.getVisibility() == View.GONE && invalidUsername.getVisibility() == View.GONE
         && invalidPassword.getVisibility() == View.GONE){
-            userManager.addUser(nameValue.trim(), usernameValue.trim(), passwordValue.trim());
+            userManager.addUser(nameValue.trim(), usernameValue.trim(), passwordValue.trim(), false);
             goToLogin(v);
         }
     }

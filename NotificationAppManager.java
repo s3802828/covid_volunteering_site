@@ -46,7 +46,7 @@ public class NotificationAppManager {
 
         Cursor cursor = database.query(DatabaseHelper.NOTIFICATION_TABLE_NAME, columns,
                 DatabaseHelper.NOTIFICATION_RECEIVER + " = " + user_id + " and " +
-                        DatabaseHelper.NOTIFICATION_TO_LEADER + " = true;",
+                        DatabaseHelper.NOTIFICATION_TO_LEADER + " = 1;",
                 null, null, null, null );
         if(cursor != null) cursor.moveToFirst();
         return cursor;
@@ -62,7 +62,7 @@ public class NotificationAppManager {
 
         Cursor cursor = database.query(DatabaseHelper.NOTIFICATION_TABLE_NAME, columns,
                 DatabaseHelper.NOTIFICATION_RECEIVER + " = " + user_id + " and " +
-                        DatabaseHelper.NOTIFICATION_TO_LEADER + " = false;",
+                        DatabaseHelper.NOTIFICATION_TO_LEADER + " = 0;",
                 null, null, null, null );
         if(cursor != null) cursor.moveToFirst();
         return cursor;

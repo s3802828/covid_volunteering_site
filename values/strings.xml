@@ -36,4 +36,13 @@
     <string name="site_leader_name">Site Leader Name</string>
     <string name="cancel_route_mode">CANCEL ROUTE MODE</string>
     <string name="add_site">ADD SITE</string>
+    <string name="all_site">All Site</string>
+    <string name="update_site">UPDATE SITE</string>
+    <string name="join_site">JOIN SITE</string>
+    <string name="registrant_username">Registrant Username</string>
+    <string name="friend_name">Friend Name</string>
+    <string name="friend_email">Friend Email</string>
+    <string name="site_number">Site Number</string>
+    <string name="registrant_name">Registrant Name</string>
+    <string name="enter_site_number">Enter Site Number</string>
 </resources>

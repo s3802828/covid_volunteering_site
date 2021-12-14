@@ -25,12 +25,12 @@ public class UserManager {
         dbHelper.close();
     }
 
-    public void addUser(String name, String username, String password){
+    public void addUser(String name, String username, String password, boolean isSuper){
         ContentValues contentValue = new ContentValues();
         contentValue.put(DatabaseHelper.USER_NAME, name);
         contentValue.put(DatabaseHelper.USER_USERNAME, username);
         contentValue.put(DatabaseHelper.USER_PASSWORD, password);
-        contentValue.put(DatabaseHelper.USER_IS_SUPER, false);
+        contentValue.put(DatabaseHelper.USER_IS_SUPER, isSuper);
         database.insert(DatabaseHelper.USER_TABLE_NAME, null, contentValue);
     }
 

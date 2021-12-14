@@ -42,7 +42,7 @@ public class UpdateSiteActivity extends AppCompatActivity {
         siteLatitude = findViewById(R.id.latitudeUpdate);
         siteLatitude.setText(latitude + "");
 
-        EditText siteLeader = findViewById(R.id.leaderNameUpdate);
+        TextView siteLeader = findViewById(R.id.leaderNameUpdate);
         siteLeader.setText(intent.getStringExtra("leader_name"));
 
         siteTestNum = findViewById(R.id.tested_num);
@@ -116,10 +116,16 @@ public class UpdateSiteActivity extends AppCompatActivity {
                         Double.parseDouble(longitudeValue), Integer.parseInt(testNumValue));
                 Cursor cursor = siteManager.getAllVolunteerAccountInOneSite(site_id);
                 StringBuilder message = new StringBuilder().append("Leader has modified ");
-                if(!siteNameValue.equals(currentSiteName)) message.append("name, ");
-                if(Double.parseDouble(longitudeValue) != longitude || Double.parseDouble(longitudeValue) != latitude)
+                if(!siteNameValue.equals(currentSiteName)) {
+                    message.append("name, ");
+                }
+                if(Double.parseDouble(longitudeValue) != longitude || Double.parseDouble(latitudeValue) != latitude){
                     message.append("position, ");
-                if(Integer.parseInt(testNumValue) != numOfTested) message.append("number of tested people ");
+                }
+                if(Integer.parseInt(testNumValue) != numOfTested) {
+                    System.out.println("HE3");
+                    message.append("number of tested people ");
+                }
                 message.append("of site: ").append(currentSiteName).append(" (NO.").append(site_id).append(")");
                 do{
                    if(cursor.getCount() > 0){

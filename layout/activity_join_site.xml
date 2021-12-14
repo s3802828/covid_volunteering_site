@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,89 +8,257 @@
     tools:context=".JoinSiteActivity">
 
     <TextView
-        android:id="@+id/username_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/enter_username" />
-
-    <TextView
-        android:id="@+id/user_name_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none" />
-
-    <EditText
-        android:id="@+id/friend_name_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="@string/enter_friend_name" />
-
-    <TextView
-        android:id="@+id/invalidName"
+        android:id="@+id/join_site"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/join_site_form"
+        android:layout_marginBottom="30dp"
+        android:text="@string/join_site"
+        android:textSize="48sp" />
 
-    <EditText
-        android:id="@+id/friend_email_join"
+    <TableLayout
+        android:id="@+id/join_site_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:hint="@string/enter_email" />
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="15dp"
+        android:shrinkColumns="0"
+        android:stretchColumns="1">
 
-    <TextView
-        android:id="@+id/invalidEmail"
+        <TableRow
+            android:id="@+id/join_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/usernameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/username_join"
+                android:text="@string/registrant_username"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/username_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:ems="10" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/join_user_name_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/user_nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/user_name_join"
+                android:text="@string/registrant_name"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/user_name_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:ems="10" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/friend_name_join_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/friend_name_joinLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/friend_name_join"
+                android:text="@string/friend_name"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/friend_name_join"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/enter_friend_name"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/invalidName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/friend_name_join"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/friend_email_join_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/friend_email_joinLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/friend_email_join"
+                android:text="@string/friend_email"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/friend_email_join"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/enter_email"
+                    android:inputType="textEmailAddress" />
+
+                <TextView
+                    android:id="@+id/invalidEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/friend_email_join"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/invalidVolunteer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/invalidEmail"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/site_num_join_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/siteNumLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/site_num_join"
+                android:text="@string/site_number"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/site_num_join"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:hint="@string/enter_site_number"/>
+
+                <TextView
+                    android:id="@+id/invalidId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/site_num_join"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/site_name_join_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/site_name_join"
+                android:text="@string/site_name"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/site_name_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textSize="15sp"
+                android:textColor="@color/black" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/leaderNameJoinGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/leaderNameJoinLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:labelFor="@+id/site_leader_join"
+                android:paddingBottom="5dp"
+                android:text="@string/site_leader_name"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/site_leader_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+
+                android:ems="10" />
+        </TableRow>
+
+    </TableLayout>
+    <RelativeLayout
+        android:id="@+id/button_site_add_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        android:layout_below="@+id/join_site_form"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onConfirm"
+            android:text="@string/confirm_add_site" />
 
-    <TextView
-        android:id="@+id/invalidVolunteer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="@color/red" />
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="102dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/confirm_button"
+            android:onClick="backToMap"
+            android:text="@string/cancel" />
 
-    <TextView
-        android:id="@+id/site_num_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none" />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/site_name_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none" />
-
-    <TextView
-        android:id="@+id/site_leader_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none" />
-
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/confirm_add_site"
-        android:onClick="onConfirm" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        android:onClick="backToMap" />
-
-</LinearLayout>
+</RelativeLayout>

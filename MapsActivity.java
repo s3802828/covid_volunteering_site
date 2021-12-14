@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -28,7 +29,9 @@ import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -72,21 +75,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String ROUTE_API;
     private String jsonStr = "";
     private Polyline polyline;
-    private String[] from = new String[]{
+    private final String[] from = new String[]{
             DatabaseHelper.SITE_ID,
             "get_site_name",
             DatabaseHelper.USER_NAME,
     };
-    private int[] to = new int[]{
+    private final int[] to = new int[]{
             R.id.list_site_num,
             R.id.list_site_name,
             R.id.list_site_leader_name
     };
-    private String[] from1 = new String[]{
+    private final String[] from1 = new String[]{
             DatabaseHelper.SITE_ID,
             DatabaseHelper.SITE_NAME,
     };
-    private int[] to1 = new int[]{
+    private final int[] to1 = new int[]{
             R.id.list_site_num,
             R.id.list_site_name
     };
@@ -97,6 +100,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button cancelRoute;
     private LinearLayout loggedInContent, guestContent, superUserContent;
     private NotificationManager notificationManager;
+    private FloatingActionButton floatingActionButton;
+    private Marker currentPosMarker;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -114,8 +119,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createNotificationChannels();
         loggedInContent = findViewById(R.id.logged_in_tab);
         guestContent = findViewById(R.id.guest_tab);
+        superUserContent = findViewById(R.id.super_user_tab);
 
-        FloatingActionButton floatingActionButton = findViewById(R.id.floating);
+        floatingActionButton = findViewById(R.id.floating);
         floatingActionButton.setOnClickListener(v -> {
             if(currentUserID == null){
                 requestLogin();
@@ -129,24 +135,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         TextView bottomRegisteredItem = findViewById(R.id.view_sites);
-        bottomRegisteredItem.setOnClickListener(v -> {
-            viewAllRegisteredSite();
-        });
+        bottomRegisteredItem.setOnClickListener(v -> viewAllRegisteredSite());
 
         TextView bottomUpdateItem = findViewById(R.id.update_site);
-        bottomUpdateItem.setOnClickListener(v -> {
-            viewLeadSites(true);
-        });
+        bottomUpdateItem.setOnClickListener(v -> viewLeadSites(true));
 
         TextView bottomJoinItem = findViewById(R.id.join_site);
-        bottomJoinItem.setOnClickListener(v -> {
-            Toast.makeText(MapsActivity.this, "join", Toast.LENGTH_SHORT).show();
-        });
+        bottomJoinItem.setOnClickListener(v -> Toast.makeText(MapsActivity.this, "join", Toast.LENGTH_SHORT).show());
 
         TextView bottomViewVolunteersItem = findViewById(R.id.view_volunteers);
-        bottomViewVolunteersItem.setOnClickListener(v -> {
-            viewLeadSites(false);
-        });
+        bottomViewVolunteersItem.setOnClickListener(v -> viewLeadSites(false));
 
         TextView bottomLogoutItem = findViewById(R.id.logout);
         bottomLogoutItem.setOnClickListener(v -> {
@@ -163,6 +161,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             loggedInContent.setVisibility(View.GONE);
             guestContent.setVisibility(View.VISIBLE);
         });
+        TextView bottomViewAllSiteSuper = findViewById(R.id.view_all_sites);
+        bottomViewAllSiteSuper.setOnClickListener(v -> allSiteTask("view"));
+
+        TextView bottomUpdateSiteSuper = findViewById(R.id.update_site_super);
+        bottomUpdateSiteSuper.setOnClickListener(v -> allSiteTask("modify"));
+
+        TextView bottomViewVolunteerSuper = findViewById(R.id.view_volunteers_super);
+        bottomViewVolunteerSuper.setOnClickListener(v -> allSiteTask("volunteers"));
+
+        TextView bottomLogoutItemSuper = findViewById(R.id.logout_super);
+        bottomLogoutItemSuper.setOnClickListener(v -> {
+            if(currentUserID == null) {
+                Toast.makeText(MapsActivity.this, "You have not signed in!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            currentUserID = null;
+            isCurrentUserAdmin = null;
+            currentUserName = null;
+            currentUserUsername = null;
+            Toast.makeText(MapsActivity.this, "You have successfully logged out!", Toast.LENGTH_SHORT).show();
+            showNearbySite();
+            superUserContent.setVisibility(View.GONE);
+            guestContent.setVisibility(View.VISIBLE);
+            floatingActionButton.setVisibility(View.VISIBLE);
+        });
+
+
 
         siteManager = new SiteManager(this);
         userManager = new UserManager(this);
@@ -171,15 +196,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         siteManager.open();
         notificationAppManager.open();
 
+        createAdminAccount();
         cancelRoute = findViewById(R.id.cancel_route);
 
         radioGroup = findViewById(R.id.search_filter);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.name_choice) filterChoice = "site_name";
-                else if (checkedId == R.id.leader_choice) filterChoice = "site_leader_name";
-            }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if(checkedId == R.id.name_choice) filterChoice = "site_name";
+            else if (checkedId == R.id.leader_choice) filterChoice = "site_leader_name";
         });
 
         SearchView searchView = findViewById(R.id.searchSite);
@@ -217,12 +240,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         Button gotoLogin = findViewById(R.id.mainToLoginIn);
         Button gotoSignUp = findViewById(R.id.mainToSignUp);
-        gotoLogin.setOnClickListener(v -> {
-            gotoLogin(false);
-        });
-        gotoSignUp.setOnClickListener(v -> {
-            gotoLogin(true);
-        });
+        gotoLogin.setOnClickListener(v -> gotoLogin(false));
+        gotoSignUp.setOnClickListener(v -> gotoLogin(true));
+
+    }
+    private void createAdminAccount(){
+        if(!userManager.isExistUsername("admin1") && !userManager.isExistUsername("admin2")){
+            userManager.addUser("Admin1", "admin1", "abc1234!", true);
+            userManager.addUser("Admin2", "admin2", "abc1234!", true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent data = getIntent();
+        if (data != null && data.getExtras()!= null && data.getExtras().getBoolean("from_notification", false)) {
+            setIntent(null);
+            int site_id = data.getExtras().getInt("site_id");
+            int notification_id = data.getExtras().getInt("notification_id");
+            int receiver_id = data.getExtras().getInt("receiver_id");
+            Cursor getSiteCursor = siteManager.getOneSite(site_id);
+            if(currentUserID == null) requestLogin();
+            else if(currentUserID != receiver_id) Toast.makeText(MapsActivity.this, "You are not this notification's receiver", Toast.LENGTH_SHORT).show();
+            else {
+                notificationAppManager.deleteNotification(notification_id);
+                if(data.getExtras().getBoolean("to_volunteers")){
+                    showSiteInfo(site_id);
+                } else {
+                    if(currentUserID != getSiteCursor.getInt(2)){
+                        Toast.makeText(MapsActivity.this, "You are not this site's leader", Toast.LENGTH_SHORT).show();
+                    } else{
+                        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapsActivity.this);
+                        builderSingle.setTitle("VIEW LIST OF VOLUNTEERS");
+                        builderSingle.setMessage("Do you want to see list of volunteers of this site: "
+                                + getSiteCursor.getString(1) + " (NO." + getSiteCursor.getInt(0)
+                                + ")?");
+                        builderSingle.setPositiveButton("YES", ((dialog, which) -> {
+                            Intent viewIntent = new Intent(MapsActivity.this, VolunteerListActivity.class);
+                            viewIntent.putExtra("site_id", getSiteCursor.getInt(0));
+                            viewIntent.putExtra("site_name", getSiteCursor.getString(1));
+                            dialog.dismiss();
+                            startActivityForResult(viewIntent, 500);
+                        }));
+
+                        builderSingle.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+                        builderSingle.show();
+                    }
+                }
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -237,7 +304,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Bitmap bitmap = Bitmap.createScaledBitmap(
                             BitmapFactory.decodeResource(getResources(), R.drawable.ic_current),
                             120, 120, false);
-            mMap.addMarker(new MarkerOptions().position(currentPosition).title("YOU ARE HERE").zIndex(1.0f)
+            currentPosMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("YOU ARE HERE").zIndex(1.0f)
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
         }
@@ -247,7 +314,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(polyline != null) Toast.makeText(MapsActivity.this, "You should cancel the route mode first", Toast.LENGTH_SHORT).show();
             if(currentUserID == null){
                 requestLogin();
-            } else {
+            } else if(isCurrentUserAdmin) Toast.makeText(MapsActivity.this, "Admin cannot add new site", Toast.LENGTH_SHORT).show();
+            else {
                 //Move to add new site activity
                 Intent intent = new Intent(MapsActivity.this, AddSiteActivity.class);
                 intent.putExtra("longitude", latLng.longitude);
@@ -267,6 +335,72 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         });
         mMap.setOnCameraIdleListener(this::showNearbySite);
+        startLocationUpdate();
+    }
+
+    public void onLocationChanged(Location location){
+        currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        Bitmap bitmap = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(getResources(), R.drawable.ic_current),
+                120, 120, false);
+        currentPosMarker.remove();
+        currentPosMarker = mMap.addMarker(new MarkerOptions().position(currentPosition).title("YOU ARE HERE").zIndex(1.0f)
+                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+    }
+    @SuppressLint({"MissingPermission", "RestrictedApi"})
+    private void startLocationUpdate(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        client.requestLocationUpdates(mLocationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult){
+                onLocationChanged(locationResult.getLastLocation());
+            }
+        }, null);
+    }
+    private void allSiteTask(String task){
+        Cursor cursor = siteManager.getAllSite();
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MapsActivity.this);
+        builderSingle.setTitle("LIST OF ALL SITES");
+
+        SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(MapsActivity.this,
+                R.layout.site_listview_layout, cursor, from, to, 0 );
+        simpleCursorAdapter.notifyDataSetChanged();
+
+        builderSingle.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+
+        switch (task) {
+            case "view":
+                builderSingle.setAdapter(simpleCursorAdapter, (dialog, which) -> showSiteInfo(cursor.getInt(0)));
+                break;
+            case "modify":
+                builderSingle.setAdapter(simpleCursorAdapter, (dialog, which) -> {
+                    Intent intent = new Intent(MapsActivity.this, UpdateSiteActivity.class);
+                    intent.putExtra("site_id", cursor.getInt(0));
+                    intent.putExtra("site_name", cursor.getString(1));
+                    intent.putExtra("longitude", cursor.getDouble(2));
+                    intent.putExtra("latitude", cursor.getDouble(3));
+                    intent.putExtra("leader_name", cursor.getString(5));
+                    intent.putExtra("num_of_tested", cursor.getInt(4));
+                    startActivityForResult(intent, 400);
+                });
+                break;
+            case "volunteers":
+                builderSingle.setAdapter(simpleCursorAdapter, (dialog, which) -> {
+                    Intent intent = new Intent(MapsActivity.this, VolunteerListActivity.class);
+                    intent.putExtra("site_id", cursor.getInt(0));
+                    intent.putExtra("site_name", cursor.getString(1));
+                    startActivityForResult(intent, 500);
+                });
+                break;
+            case "join":
+
+                break;
+        }
+        builderSingle.show();
     }
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -282,12 +416,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Cursor lCursor = notificationAppManager.getNotificationOfLeader(currentUserID);
         do{
             if(lCursor.getCount() > 0 ){
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("from_notification", true);
+                intent.putExtra("to_volunteers", false);
+                intent.putExtra("notification_id", lCursor.getInt(0));
+                intent.putExtra("receiver_id", lCursor.getInt(1));
+                intent.putExtra("site_id", Integer.parseInt(lCursor.getString(2)
+                        .substring(lCursor.getString(2).lastIndexOf("(NO.") + 4,
+                                lCursor.getString(2).length() - 1)));
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, lCursor.getInt(0), intent, PendingIntent.FLAG_IMMUTABLE);
                 Notification notification = new NotificationCompat.Builder(this,
                         "site_change_1")
-                        .setSmallIcon(R.drawable.ic_lead_site)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle("New Volunteer!")
                         .setContentText(lCursor.getString(2))
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_lead_site))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(lCursor.getString(2)))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                         .build();
                 notificationManager.notify(lCursor.getInt(0), notification);
@@ -297,17 +446,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Cursor cursor = notificationAppManager.getNotificationOfVolunteer(currentUserID);
         do{
             if(cursor.getCount() > 0 ){
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("from_notification", true);
+                intent.putExtra("to_volunteers", true);
+                intent.putExtra("notification_id", cursor.getInt(0));
+                intent.putExtra("receiver_id", cursor.getInt(1));
+                intent.putExtra("site_id", Integer.parseInt(cursor.getString(2)
+                        .substring(cursor.getString(2).lastIndexOf("(NO.") + 4,
+                                cursor.getString(2).length() - 1)));
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, cursor.getInt(0), intent, PendingIntent.FLAG_IMMUTABLE);
                 Notification notification = new NotificationCompat.Builder(this,
                         "site_change_1")
-                        .setSmallIcon(R.drawable.ic_checked)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle("Joined Site Modified")
                         .setContentText(cursor.getString(2))
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_checked))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(cursor.getString(2)))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                         .build();
                 notificationManager.notify(cursor.getInt(0), notification);
             }
         } while (cursor.moveToNext());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        System.out.println("Hello" + intent);
     }
 
     private void showNearbySite(){
@@ -324,7 +495,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 visibleRegion.latLngBounds.northeast.latitude,
                 visibleRegion.latLngBounds.southwest.longitude,
                 visibleRegion.latLngBounds.northeast.longitude);
-        Cursor joinedCursor = null;
+        Cursor joinedCursor;
         ArrayList<Integer> joinedSiteId = new ArrayList<>();
         if(currentUserID != null){
             joinedCursor = siteManager.getJoinedSitesOfOneUser(currentUserID);
@@ -394,7 +565,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     "\nSite Leader Name: " + userCursor.getString(0) +
                     "\nNumber of volunteers: " + volunteerCursor.getCount() +
                     "\nNumber of tested people: " + cursor.getDouble(5);
-            if(currentUserID != null && currentUserID == cursor.getInt(2)){
+            if(currentUserID != null && (currentUserID == cursor.getInt(2) || isCurrentUserAdmin)){
                 alertDialog.setMessage(content1);
             } else if(currentUserID == null || !siteManager.checkExistVolunteer(site_id, currentUserUsername)){
                 alertDialog.setMessage(content);
@@ -403,31 +574,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", (dialog, which) -> dialog.dismiss());
-
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "REGISTER", (dialog, which) -> {
-                if(currentUserID == null){
-                    requestLogin();
-                } else {
-                    Intent intent = new Intent(MapsActivity.this, JoinSiteActivity.class);
-                    intent.putExtra("user_id", currentUserID);
-                    intent.putExtra("user_name", currentUserName);
-                    intent.putExtra("user_username", currentUserUsername);
-                    intent.putExtra("site_id", cursor.getInt(0));
-                    intent.putExtra("site_name", cursor.getString(1));
-                    intent.putExtra("site_leader", userCursor.getString(0));
-                    intent.putExtra("site_leader_id", cursor.getInt(2));
-                    startActivityForResult(intent, 200);
+            if(isCurrentUserAdmin == null || !isCurrentUserAdmin){
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "REGISTER", (dialog, which) -> {
+                    if(currentUserID == null){
+                        requestLogin();
+                    } else {
+                        Intent intent = new Intent(MapsActivity.this, JoinSiteActivity.class);
+                        intent.putExtra("user_id", currentUserID);
+                        intent.putExtra("user_name", currentUserName);
+                        intent.putExtra("user_username", currentUserUsername);
+                        intent.putExtra("site_id", cursor.getInt(0));
+                        intent.putExtra("site_name", cursor.getString(1));
+                        intent.putExtra("site_leader", userCursor.getString(0));
+                        intent.putExtra("site_leader_id", cursor.getInt(2));
+                        startActivityForResult(intent, 200);
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ROUTE", (dialog, which) -> {
+                    if(currentPosition != null){
+                        LatLng dest = new LatLng(cursor.getDouble(4), cursor.getDouble(3));
+                        route(currentPosition, dest);
+                        Toast.makeText(MapsActivity.this, "You would go to route!", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(MapsActivity.this, "We need to get your location", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                }
-            });
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ROUTE", (dialog, which) -> {
-                if(currentPosition != null){
-                    LatLng dest = new LatLng(cursor.getDouble(4), cursor.getDouble(3));
-                    route(currentPosition, dest);
-                    Toast.makeText(MapsActivity.this, "You would go to route!", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(MapsActivity.this, "We need to get your location", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            });
+                });
+            }
             alertDialog.show();
         }
     }
@@ -459,8 +631,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     private void gotoLogin(boolean straightToSignUp){
         Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
-        if(straightToSignUp) intent.putExtra("straight_to_sign_up", true);
-        else intent.putExtra("straight_to_sign_up", false);
+        intent.putExtra("straight_to_sign_up", straightToSignUp);
         startActivityForResult(intent, 300);
     }
     public void showFilterChoices(View v){
@@ -549,9 +720,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 isCurrentUserAdmin = (data.getExtras().getInt("is_super") == 1);
                 showNearbySite();
                 guestContent.setVisibility(View.GONE);
-                loggedInContent.setVisibility(View.VISIBLE);
+                if(!isCurrentUserAdmin) loggedInContent.setVisibility(View.VISIBLE);
+                else {
+                    floatingActionButton.setVisibility(View.GONE);
+                    superUserContent.setVisibility(View.VISIBLE);
+                }
                 sendNotifications();
             }
+        }
+        if(requestCode == 600){
         }
     }
 
@@ -624,6 +801,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return poly;
         }
     }
+
 
     @Override
     protected void onDestroy() {

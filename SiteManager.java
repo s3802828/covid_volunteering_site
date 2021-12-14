@@ -36,16 +36,16 @@ public class SiteManager {
         database.insert(DatabaseHelper.SITE_TABLE_NAME, null, contentValue);
     }
     public Cursor getAllSite(){
-        String[] columns = new String[]{
-                DatabaseHelper.SITE_ID,
-                DatabaseHelper.SITE_NAME,
-                DatabaseHelper.SITE_LEADER,
-                DatabaseHelper.SITE_LONGITUDE,
-                DatabaseHelper.SITE_LATITUDE,
-                DatabaseHelper.SITE_NUM_OF_TESTED
-        };
-        Cursor cursor = database.query(DatabaseHelper.SITE_TABLE_NAME, columns,
-                null, null, null, null, null);
+        Cursor cursor = database.rawQuery("SELECT " + DatabaseHelper.SITE_TABLE_NAME + "." +
+                DatabaseHelper.SITE_ID+ "," + DatabaseHelper.SITE_TABLE_NAME + "." +
+                DatabaseHelper.SITE_NAME + " AS get_site_name," + DatabaseHelper.SITE_TABLE_NAME + "." +
+                DatabaseHelper.SITE_LONGITUDE + "," + DatabaseHelper.SITE_TABLE_NAME + "." +
+                DatabaseHelper.SITE_LATITUDE + "," + DatabaseHelper.SITE_TABLE_NAME + "." +
+                DatabaseHelper.SITE_NUM_OF_TESTED + "," + DatabaseHelper.USER_TABLE_NAME + "." +
+                DatabaseHelper.USER_NAME +" FROM " + DatabaseHelper.SITE_TABLE_NAME + " INNER JOIN "
+                + DatabaseHelper.USER_TABLE_NAME + " ON " + DatabaseHelper.SITE_TABLE_NAME
+                +"." + DatabaseHelper.SITE_LEADER + " = " + DatabaseHelper.USER_TABLE_NAME
+                +"." + DatabaseHelper.USER_ID, null);
         if(cursor != null){
             cursor.moveToFirst();
         }

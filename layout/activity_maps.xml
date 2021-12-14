@@ -110,6 +110,71 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/super_user_tab"
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/view_all_sites"
+                    style="?android:attr/selectableItemBackgroundBorderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableTop="@drawable/ic_view"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:text="@string/all_site"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blue" />
+                <TextView
+                    android:id="@+id/update_site_super"
+                    style="?android:attr/selectableItemBackgroundBorderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableTop="@drawable/ic_edit"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:text="Modify"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blue" />
+                <TextView
+                    android:id="@+id/view_volunteers_super"
+                    style="?android:attr/selectableItemBackgroundBorderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableTop="@drawable/ic_profile"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:text="Volunteers"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blue" />
+                <TextView
+                    android:id="@+id/logout_super"
+                    style="?android:attr/selectableItemBackgroundBorderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableTop="@drawable/ic_logout"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:text="Logout"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blue" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/logged_in_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -174,7 +239,6 @@
                     android:drawableTop="@drawable/ic_profile"
                     android:orientation="vertical"
                     android:padding="0dp"
-
                     android:text="Volunteers"
                     android:textAllCaps="false"
                     android:textColor="@color/blue" />
@@ -193,7 +257,6 @@
                     android:text="Logout"
                     android:textAllCaps="false"
                     android:textColor="@color/blue" />
-
 
             </LinearLayout>
 
