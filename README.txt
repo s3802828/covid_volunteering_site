@@ -1,8 +1,8 @@
 # covid_volunteering_site
-# Student ID: s3802828
-# Student Name: Le Quynh Giang
+Student ID: s3802828
+Student Name: Le Quynh Giang
 
-# Functionality of the app:
+Functionality of the app:
 
 	General functionalities (all types of users could):
 		- Login, Sign Up, Logout
@@ -19,7 +19,7 @@
 		- Receive notifications about new volunteers have joined their lead sites or if there is any modifications to their joined sites.
 		- Super User: could only view and modify all of the site information and also the general functionalities.
 
-# Technogies:
+Technogies:
 
 	- Google Play Service Map and Location: work with map and get current location
 	- Direction API: get route from current location to one site
