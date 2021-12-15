@@ -1,1 +1,0 @@
-# covid_volunteering_site
