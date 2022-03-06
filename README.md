@@ -4,10 +4,11 @@ Android app to manage the number of volunteers and information of covid voluntee
 
 Contents
 ========
-* [Functionalities of the app](#functionalities of the app)
+
+* [App Functionalities](#app-functionalities)
 * [Technologies](#technologies)
 
-### Functionalities of the app
+### App Functionalities
 ---
 
 	General functionalities (all types of users could):
