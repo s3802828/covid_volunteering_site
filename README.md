@@ -1,4 +1,14 @@
-Functionality of the app:
+# COVID VOLUNTEERING SITES MANAGEMENT ANDROID APP
+
+Android app to manage the number of volunteers and information of covid volunteering sites.
+
+Contents
+========
+* [Functionalities of the app](#functionalities of the app)
+* [Technologies](#technologies)
+
+### Functionalities of the app
+---
 
 	General functionalities (all types of users could):
 		- Login, Sign Up, Logout
@@ -15,7 +25,8 @@ Functionality of the app:
 		- Receive notifications about new volunteers have joined their lead sites or if there is any modifications to their joined sites.
 		- Super User: could only view and modify all of the site information and also the general functionalities.
 
-Technogies:
+### Technologies
+---
 
 	- Google Play Service Map and Location: work with map and get current location
 	- Direction API: get route from current location to one site
