@@ -1,7 +1,3 @@
-# covid_volunteering_site
-Student ID: s3802828
-Student Name: Le Quynh Giang
-
 Functionality of the app:
 
 	General functionalities (all types of users could):
